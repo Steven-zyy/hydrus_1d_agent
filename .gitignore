@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local environment and secrets
+.env
+
+# Runtime outputs and local state
+runs/
+.hydrus_agent_state/
+.codex_tmp/
+pytest_tmp*/
+pytest_tmp_hydrus/
+tmp*/
+
+# Coding-assistant local state
+.claude/
+
+# Local field-data inputs (user-provided, may contain sensitive info)
+data/
+
+# Generated local artifacts
+config/from_description.json
+output_inventory.md
+generated_files_audit.md
+
+# Official benchmark inputs and generated benchmark results
+benchmarks/pc_progress_raw/
+benchmarks/benchmark_results/
+
+# Editor settings
+.vscode/
+.idea/
+
+# macOS metadata
+.DS_Store
+
+.pytest_adapter_tmp*/
+
+.pytest_tmp*/
+
+.pytest_adapter_tmp*/

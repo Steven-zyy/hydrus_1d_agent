@@ -1,0 +1,33 @@
+{
+  "batch_id": "simple_sensitivity",
+  "scenarios": [
+    {
+      "scenario_id": "base",
+      "overrides": {}
+    },
+    {
+      "scenario_id": "ks_low",
+      "overrides": {
+        "van_genuchten[0].Ks": 0.5
+      }
+    },
+    {
+      "scenario_id": "alpha_low",
+      "overrides": {
+        "van_genuchten[0].alpha": 5.0
+      }
+    },
+    {
+      "scenario_id": "flux_high",
+      "overrides": {
+        "upper_boundary.flux": 0.002
+      }
+    },
+    {
+      "scenario_id": "initial_head_wetter",
+      "overrides": {
+        "initial_condition.value": -0.5
+      }
+    }
+  ]
+}

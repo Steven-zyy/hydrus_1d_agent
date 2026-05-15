@@ -1,0 +1,2 @@
+HYDRUS-1D input templates will live here in a later milestone
+(SELECTOR.IN, PROFILE.DAT, ATMOSPH.IN, etc.).

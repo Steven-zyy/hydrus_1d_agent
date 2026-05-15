@@ -1,0 +1,24 @@
+case_id,process_type,source_dir,supported_now,description,notes
+1DRAINAG,water_flow,benchmarks/pc_progress_raw/Direct/1DRAINAG,yes,Official drainage example,Clean water-flow benchmark in current harness
+1INFILTR,water_flow,benchmarks/pc_progress_raw/Direct/1INFILTR,yes,Official infiltration example,Clean water-flow benchmark in current harness
+1SCALING,scaling_factor,benchmarks\pc_progress_raw\Direct\1SCALING,no,Official PC-Progress example 1SCALING,Auto-detected scaling factors; future scope.
+2HYSTER,hysteresis,benchmarks\pc_progress_raw\Direct\2HYSTER,no,Official PC-Progress example 2HYSTER,Auto-detected hysteresis; future scope.
+2NOHYSTR,atmospheric_field_profile,benchmarks\pc_progress_raw\Direct\2NOHYSTR,partial,Official PC-Progress example 2NOHYSTR,Fails on this H1D_CALC build because first ATMOSPH.IN tAtm equals tInit + dtInit and is rejected.
+3LAIJURI,solute,benchmarks\pc_progress_raw\Direct\3LAIJURI,partial,Official PC-Progress example 3LAIJURI,Auto-detected solute-related output/input; solute generation is future scope.
+3SELIM,solute,benchmarks\pc_progress_raw\Direct\3SELIM,partial,Official PC-Progress example 3SELIM,Auto-detected solute-related output/input; solute generation is future scope.
+4HEAT,heat_transport,benchmarks/pc_progress_raw/Direct/4HEAT,no,Official heat transport under fluctuating atmospheric condition,Heat transport future scope; not part of water-flow atmospheric validation
+5SEASON,atmospheric_field_profile,benchmarks/pc_progress_raw/Direct/5SEASON,partial,Official field soil profile under grass with atmospheric boundary,Obs_Node heat/solute-style columns parse; still partial due rRoot atmospheric demand plus solute/heat/sink flags
+DRAINAGE,atmospheric_field_profile,benchmarks\pc_progress_raw\Direct\DRAINAGE,partial,Official PC-Progress example DRAINAGE,Auto-detected atmospheric boundary candidate; may include future-scope processes.
+EnBal2b,heat_transport,benchmarks\pc_progress_raw\Direct\EnBal2b,no,Official PC-Progress example EnBal2b,Auto-detected heat transport; future scope.
+ROOTUPTK,root_uptake,benchmarks\pc_progress_raw\Direct\ROOTUPTK,no,Official PC-Progress example ROOTUPTK,Auto-detected root uptake; future scope.
+TEST1,solute,benchmarks/pc_progress_raw/Direct/TEST1,partial,Official solute-enabled example,HYDRUS run succeeds and Obs_Node heat/solute-style columns parse; solute transport generation remains out of scope
+Test10,atmospheric_field_profile,benchmarks\pc_progress_raw\Direct\Test10,partial,Official PC-Progress example Test10,Auto-detected atmospheric boundary candidate; may include future-scope processes.
+TEST11,solute,benchmarks\pc_progress_raw\Direct\TEST11,partial,Official PC-Progress example TEST11,Auto-detected solute-related output/input; solute generation is future scope.
+TEST2,atmospheric_field_profile,benchmarks/pc_progress_raw/Direct/TEST2,partial,Official field soil profile under grass with atmospheric boundary,Obs_Node heat/solute-style columns parse; still partial due rRoot atmospheric demand plus solute/heat/sink flags
+TEST3,solute,benchmarks\pc_progress_raw\Direct\TEST3,partial,Official PC-Progress example TEST3,Auto-detected solute-related output/input; solute generation is future scope.
+TEST4,solute,benchmarks\pc_progress_raw\Direct\TEST4,partial,Official PC-Progress example TEST4,Auto-detected solute-related output/input; solute generation is future scope.
+TEST5,solute,benchmarks\pc_progress_raw\Direct\TEST5,partial,Official PC-Progress example TEST5,Auto-detected solute-related output/input; solute generation is future scope.
+Test9,atmospheric_field_profile,benchmarks\pc_progress_raw\Direct\Test9,partial,Official PC-Progress example Test9,Auto-detected atmospheric boundary candidate; may include future-scope processes.
+TEST9a,atmospheric_field_profile,benchmarks\pc_progress_raw\Direct\TEST9a,partial,Official PC-Progress example TEST9a,Auto-detected atmospheric boundary candidate; may include future-scope processes.
+UPINFIL,water_flow,benchmarks\pc_progress_raw\Direct\UPINFIL,yes,Official PC-Progress example UPINFIL,Auto-detected water-flow candidate.
+VOLATILE,atmospheric_field_profile,benchmarks\pc_progress_raw\Direct\VOLATILE,partial,Official PC-Progress example VOLATILE,Auto-detected atmospheric boundary candidate; may include future-scope processes.

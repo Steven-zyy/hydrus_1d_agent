@@ -1,0 +1,67 @@
+{
+  "project_name": "simple atmospheric root uptake column",
+  "case_id": "case_root_uptake_001",
+  "simulation_time": {
+    "t_init": 0.0,
+    "t_end": 1.0,
+    "dt_init": 0.001,
+    "units": "days"
+  },
+  "soil_profile": [
+    {
+      "depth_top": 0.0,
+      "depth_bottom": 1.0,
+      "material_id": 1
+    }
+  ],
+  "van_genuchten": [
+    {
+      "material_id": 1,
+      "theta_r": 0.065,
+      "theta_s": 0.41,
+      "alpha": 7.5,
+      "n": 1.89,
+      "Ks": 1.061,
+      "l": 0.5
+    }
+  ],
+  "initial_condition": {
+    "type": "pressure_head",
+    "value": -1.0
+  },
+  "upper_boundary": {
+    "type": "atmospheric"
+  },
+  "lower_boundary": {
+    "type": "free_drainage"
+  },
+  "atmospheric": {
+    "enabled": true,
+    "records": [
+      {
+        "time": 0.0,
+        "precipitation": 0.0,
+        "evaporation": 0.0,
+        "hCritA": -10000.0
+      },
+      {
+        "time": 1.0,
+        "precipitation": 0.001,
+        "evaporation": 0.0,
+        "hCritA": -10000.0
+      }
+    ]
+  },
+  "root_uptake": {
+    "enabled": true,
+    "model": "simple",
+    "root_depth": 0.5,
+    "potential_transpiration": 0.001,
+    "distribution": "uniform"
+  },
+  "observation_depths": [0.25, 0.75],
+  "output_settings": {
+    "print_times": [0.25, 0.5, 0.75, 1.0],
+    "print_interval": 0.05
+  }
+}
