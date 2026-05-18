@@ -1,0 +1,17 @@
+{
+  "case_id": "atmospheric_boundary_csv",
+  "prompt": "Run a 30-day sandy loam column with the daily atmospheric forcing from the new_user_dynamic_test CSV.",
+  "tags": ["atmospheric", "csv"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {"max_critical": 0},
+    "features": {
+      "upper_boundary_type": "atmospheric",
+      "lower_boundary_type": "free_drainage",
+      "has_atmospheric_csv": true,
+      "has_material_csv": false
+    },
+    "notes": "Uses the project-root-relative atmospheric CSV resolved by load_config."
+  }
+}

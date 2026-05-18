@@ -1,0 +1,22 @@
+{
+  "case_id": "constant_head_ponding",
+  "prompt": "Simulate 5 cm of ponded water at the surface for 2 days on loam, free drainage at the base.",
+  "tags": ["constant_head", "ponded_surface"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {
+      "must_have_codes": [
+        "UPPER_CONST_HEAD_PONDED_NO_NOTE",
+        "RECHARGE_INTERPRETATION_CAVEAT"
+      ],
+      "max_critical": 0
+    },
+    "features": {
+      "upper_boundary_type": "constant_head",
+      "lower_boundary_type": "free_drainage",
+      "soil_layer_count": 1
+    },
+    "notes": "Positive head at the surface implies ponding; reviewer should flag it as info."
+  }
+}

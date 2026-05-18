@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: >
+  If you use this software, please cite it as below. License not
+  specified yet; contact the author for reuse terms.
+title: "HYDRUS-1D Agent"
+abstract: >
+  A local, review-first, reliability-aware, reproducible workflow for
+  preparing, running, reading, plotting, checking, and comparing
+  HYDRUS-1D simulations. Research software prototype.
+type: software
+version: "0.6.0"
+date-released: "2026-05-18"
+repository-code: "https://github.com/Steven-zyy/hydrus_1d_agent"
+authors:
+  - given-names: Yuyang
+    family-names: Zhu
+keywords:
+  - HYDRUS-1D
+  - vadose zone hydrology
+  - research software
+  - workflow automation

@@ -1,18 +1,46 @@
 # HYDRUS-1D Agent
 
-A local, reproducible assistant workflow for preparing, running, reading, plotting, checking, and comparing HYDRUS-1D simulations.
+A local, **review-first, reliability-aware, reproducible** workflow for preparing, running, reading, plotting, checking, and comparing HYDRUS-1D simulations. This is a research software prototype; it is **not** a fully autonomous modeller.
 
 This repository is intended for users who have PC-Progress HYDRUS-1D installed locally and want a safer command-line workflow that can also be operated through Claude Code, Claude Desktop/Cowork, or Codex.
 
 **Platform requirement:** `H1D_CALC.EXE` is a Windows PE executable. It cannot be run on Linux, macOS, WSL, or remote cloud environments including Claude Cowork sessions without a local HYDRUS-1D installation on the same Windows machine. The Python agent code can run anywhere, but HYDRUS execution requires a local Windows installation.
 
+**License:** Not specified yet. Contact the author for reuse terms.
+
 Starting from zero with Codex or Claude Code? See [docs/getting_started_with_codex_or_claude_code.md](docs/getting_started_with_codex_or_claude_code.md).
 
 For everyday use with Codex or Claude Code, see [docs/simple_user_prompts.md](docs/simple_user_prompts.md) for short modelling prompts that the assistant can translate into JSON configs and run through the review-before-run workflow.
 
+Workflow-level documentation lives under [`skills/`](skills/README.md). The offline prompt-to-config benchmark lives under [`benchmarks/prompt_to_config/`](benchmarks/prompt_to_config/README.md). Release notes are in [`RELEASE_NOTES.md`](RELEASE_NOTES.md).
+
 ## Current Status
 
-This is a `v0.2-local` research prototype. It is useful for simple water-flow workflows, atmospheric forcing, simple root uptake, one-species conservative solute transport, field-data comparison, scenario/sensitivity batches, scenario comparison reports, and benchmark classification against official PC-Progress examples. It is not a replacement for expert HYDRUS model setup or review.
+`v0.6.0` (see [RELEASE_NOTES.md](RELEASE_NOTES.md)). Research software prototype. Useful for simple water-flow workflows, atmospheric forcing, simple root uptake, one-species conservative solute transport, field-data comparison, scenario/sensitivity batches, scenario comparison reports, and benchmark classification against official PC-Progress examples. It is **not** a replacement for expert HYDRUS model setup or review, and it is **not** a fully autonomous modeller — every HYDRUS run goes through the review-before-run guard.
+
+## Installation
+
+Recommended (conda; one command for a working environment):
+
+```bash
+conda env create -f environment.yml
+conda activate hydrus-agent
+```
+
+Alternative (pip):
+
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt   # for running the test suite
+```
+
+Editable install (also exposes the `hydrus-agent` console script):
+
+```bash
+pip install -e .
+```
+
+After an editable install, `hydrus-agent --print-config-schema` is equivalent to `python main.py --print-config-schema`. The plain `python main.py …` workflow continues to work in all cases.
 
 ## What It Can Do
 
@@ -69,37 +97,18 @@ Some official examples with future-scope physics can be executed, parsed, summar
 - [LLM-assisted JSON configuration](docs/llm_assisted_json_configuration.md): how to use an external LLM to write JSON configs and validate them locally.
 - [LLM prompt templates](docs/llm_prompt_templates.md): copy-paste prompts for common Claude/Codex tasks.
 - [User acceptance tests](docs/user_acceptance_tests.md): manual checks for non-developer LLM-assisted workflows.
+- [Skills catalogue](skills/README.md): workflow-level skill documentation (read the relevant `SKILL.md` before modifying configs or running HYDRUS).
+- [Prompt-to-config benchmark](benchmarks/prompt_to_config/README.md): deterministic offline benchmark that grades saved candidate configs. Does not call an LLM. Does not run HYDRUS.
 - [Release notes](RELEASE_NOTES.md): local prototype release summary.
 
 ## Quickstart
 
-The commands below show the local maintainer paths used for this prototype:
-`D:\Claude\hydrus_1d_agent` and
-`C:\App\anaconda3\envs\hydrus-agent\python.exe`. Replace them with your own
-project folder and Python interpreter path when installing elsewhere.
+Open a shell in the project root. On Windows use PowerShell; on Linux any POSIX shell. The commands below use plain `python`; on the maintainer machine, substitute the full conda env interpreter — see [Maintainer-specific notes](#maintainer-specific-notes) at the end of this document.
 
-Open PowerShell in the project root:
+Verify the environment (Windows only; HYDRUS execution requires Windows):
 
-```powershell
-cd D:\Claude\hydrus_1d_agent
-```
-
-Use the project conda environment:
-
-```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe scripts\check_hydrus_environment.py
-```
-
-For a fresh environment, install runtime dependencies with:
-
-```powershell
-<python.exe> -m pip install -r requirements.txt
-```
-
-Install test-only dependencies when developing or running the test suite:
-
-```powershell
-<python.exe> -m pip install -r requirements-dev.txt
+```bash
+python scripts/check_hydrus_environment.py
 ```
 
 Project files and output paths shown below are relative to the repository root unless an absolute local setup path is explicitly shown.
@@ -107,7 +116,7 @@ Project files and output paths shown below are relative to the repository root u
 Run the simple demo pipeline:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\simple_runnable_case.json --all --overwrite-run --timeout 30 --hydrus-launch-mode argv --allow-config-mismatch
+python main.py --config config\simple_runnable_case.json --all --overwrite-run --timeout 30 --hydrus-launch-mode argv --allow-config-mismatch
 ```
 
 The `--allow-config-mismatch` flag is appropriate here because this is an existing hand-authored demo config, not a freshly reviewed natural-language config.
@@ -115,32 +124,32 @@ The `--allow-config-mismatch` flag is appropriate here because this is an existi
 Run the simple root uptake demo:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\simple_root_uptake_case.json --all --overwrite-run --timeout 60 --hydrus-launch-mode argv --allow-config-mismatch
+python main.py --config config\simple_root_uptake_case.json --all --overwrite-run --timeout 60 --hydrus-launch-mode argv --allow-config-mismatch
 ```
 
 Compare a completed or newly run case against measured field data:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\simple_runnable_case.json --all --overwrite-run --timeout 30 --hydrus-launch-mode argv --allow-config-mismatch --field-data data\measured_obs_nodes.csv
+python main.py --config config\simple_runnable_case.json --all --overwrite-run --timeout 30 --hydrus-launch-mode argv --allow-config-mismatch --field-data data\measured_obs_nodes.csv
 ```
 
 Run a small sensitivity batch:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\simple_runnable_case.json --scenario-file config\scenarios\simple_sensitivity.json --timeout 60 --hydrus-launch-mode argv
+python main.py --config config\simple_runnable_case.json --scenario-file config\scenarios\simple_sensitivity.json --timeout 60 --hydrus-launch-mode argv
 ```
 
 Summarise an existing scenario batch without rerunning HYDRUS:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --scenario-report runs\simple_sensitivity
+python main.py --scenario-report runs\simple_sensitivity
 ```
 
 Review and run the CSV atmospheric boundary demo:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\csv_atmospheric_boundary_test.json --review
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\csv_atmospheric_boundary_test.json --all --overwrite-run --timeout 60 --hydrus-launch-mode argv
+python main.py --config config\csv_atmospheric_boundary_test.json --review
+python main.py --config config\csv_atmospheric_boundary_test.json --all --overwrite-run --timeout 60 --hydrus-launch-mode argv
 ```
 
 Review and run the stable combined CSV demo (30-day, two-layer, all steps converge):
@@ -152,8 +161,8 @@ $env:HYDRUS_EXE = "C:\Program Files (x86)\PC-Progress\Hydrus-1D 4.xx\H1D_CALC.EX
 ```
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\new_user_dynamic_csv_test.json --review
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\new_user_dynamic_csv_test.json --all --overwrite-run --timeout 60 --hydrus-launch-mode argv
+python main.py --config config\new_user_dynamic_csv_test.json --review
+python main.py --config config\new_user_dynamic_csv_test.json --all --overwrite-run --timeout 60 --hydrus-launch-mode argv
 ```
 
 A clean run produces `execution_status: completed`, `hydrus_numerical_status: converged`, `qc_status: passed`, `overall_status: ok`. Inspect:
@@ -168,7 +177,7 @@ runs\new_user_dynamic_csv_test\figures\
 Generate the same stable demo from natural language using both CSV sources:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --describe "Build a 30-day HYDRUS-1D model for a 2 m vertical soil column with sandy loam from 0 to 1 m and sand from 1 to 2 m. Use atmospheric upper boundary forcing from test_inputs\new_user_dynamic_test\atmosphere_stable_30d.csv, use material hydraulic parameters from test_inputs\new_user_dynamic_test\materials_vg_stable.csv, use free drainage at the bottom, initial pressure head -1.0 m throughout the profile, observation depths 0.2, 0.6, 1.2, and 1.8 m, and print times 1, 3, 5, 7, 10, 14, 20, 25, and 30 days." --write-config config\from_csv_description.json --review
+python main.py --describe "Build a 30-day HYDRUS-1D model for a 2 m vertical soil column with sandy loam from 0 to 1 m and sand from 1 to 2 m. Use atmospheric upper boundary forcing from test_inputs\new_user_dynamic_test\atmosphere_stable_30d.csv, use material hydraulic parameters from test_inputs\new_user_dynamic_test\materials_vg_stable.csv, use free drainage at the bottom, initial pressure head -1.0 m throughout the profile, observation depths 0.2, 0.6, 1.2, and 1.8 m, and print times 1, 3, 5, 7, 10, 14, 20, 25, and 30 days." --write-config config\from_csv_description.json --review
 ```
 
 ## Safe Two-Step Workflow
@@ -176,13 +185,13 @@ C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --describe "Build a 30-day
 For a new natural-language case, generate and review the config first:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --describe "1 m sandy loam column, 1 day, 1 mm/day infiltration, free drainage lower boundary, initial pressure head -1 m, observations at 0.3 and 0.7 m" --write-config config\from_description.json --review
+python main.py --describe "1 m sandy loam column, 1 day, 1 mm/day infiltration, free drainage lower boundary, initial pressure head -1 m, observations at 0.3 and 0.7 m" --write-config config\from_description.json --review
 ```
 
 After reviewing the summary, run that same config:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\from_description.json --all --overwrite-run --timeout 30 --hydrus-launch-mode argv
+python main.py --config config\from_description.json --all --overwrite-run --timeout 30 --hydrus-launch-mode argv
 ```
 
 The reviewed-config guard records the reviewed file path and content hash in `.hydrus_agent_state\last_review.json`. If a later command tries to run a different config, the CLI stops before launching HYDRUS unless `--allow-config-mismatch` is explicitly provided.
@@ -262,12 +271,12 @@ Required CSV columns are `material`, `theta_r`, `theta_s`, `alpha_1_m`, `n`, `Ks
 
 ## Using With Claude Or Codex
 
-Open `D:\Claude\hydrus_1d_agent` in Codex, Claude Code, or another local LLM coding tool. Ask it to read `AGENTS.md` and [docs/using_with_llm_agents.md](docs/using_with_llm_agents.md) first.
+Open the project root in Codex, Claude Code, or another local LLM coding tool. Ask it to read `AGENTS.md` and [docs/using_with_llm_agents.md](docs/using_with_llm_agents.md) first. The LLM should also identify which [skill](skills/README.md) the user's request maps to before modifying configs or running anything.
 
 The LLM should:
 
-- Use `C:\App\anaconda3\envs\hydrus-agent\python.exe` for every Python command.
-- Avoid bundled Python and plain `python`.
+- Use the project's Python interpreter (the conda env if one is configured; see [Maintainer-specific notes](#maintainer-specific-notes)).
+- Avoid bundled Python.
 - Avoid printing `.env` contents.
 - Use the generate/review workflow before running newly generated configs.
 - Use `--hydrus-launch-mode argv` and a timeout for HYDRUS runs.
@@ -332,7 +341,7 @@ config\scenarios\simple_sensitivity.json
 Run:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --config config\simple_runnable_case.json --scenario-file config\scenarios\simple_sensitivity.json --timeout 60 --hydrus-launch-mode argv
+python main.py --config config\simple_runnable_case.json --scenario-file config\scenarios\simple_sensitivity.json --timeout 60 --hydrus-launch-mode argv
 ```
 
 Each scenario gets a case ID:
@@ -351,7 +360,7 @@ runs\<batch_id>\scenario_summary.json
 Generate a comparison report from an existing batch:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --scenario-report runs\simple_sensitivity
+python main.py --scenario-report runs\simple_sensitivity
 ```
 
 This reads `runs\<batch_id>\scenario_summary.csv` and writes:
@@ -391,7 +400,7 @@ benchmarks\pc_progress_raw\Direct\
 Run one example through a copied workspace:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --benchmark-official benchmarks\pc_progress_raw\Direct\1DRAINAG --benchmark-id 1DRAINAG --timeout 60 --hydrus-launch-mode argv
+python main.py --benchmark-official benchmarks\pc_progress_raw\Direct\1DRAINAG --benchmark-id 1DRAINAG --timeout 60 --hydrus-launch-mode argv
 ```
 
 The harness copies the raw example to:
@@ -403,13 +412,13 @@ benchmarks\benchmark_results\<case_id>\hydrus_project\
 Run the manifest-supported set:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --benchmark-manifest benchmarks\manifest.csv --timeout 60 --hydrus-launch-mode argv
+python main.py --benchmark-manifest benchmarks\manifest.csv --timeout 60 --hydrus-launch-mode argv
 ```
 
 Run the full official example sweep when needed:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe main.py --benchmark-manifest benchmarks\manifest.csv --all-examples --timeout 60 --hydrus-launch-mode argv
+python main.py --benchmark-manifest benchmarks\manifest.csv --all-examples --timeout 60 --hydrus-launch-mode argv
 ```
 
 Benchmark inputs and generated benchmark results are ignored by git. Current benchmark status is documented in [docs/benchmark_support_matrix.md](docs/benchmark_support_matrix.md) and [docs/full_example_sweep_report.md](docs/full_example_sweep_report.md).
@@ -427,19 +436,26 @@ Do not commit `.env`.
 You can verify setup with:
 
 ```powershell
-C:\App\anaconda3\envs\hydrus-agent\python.exe scripts\check_hydrus_environment.py
+python scripts\check_hydrus_environment.py
 ```
 
 ## Test Command
 
-Use the project-local temporary directory:
+For most users:
 
-```powershell
-New-Item -ItemType Directory -Force "D:\Claude\hydrus_1d_agent\.codex_tmp"
-$env:TEMP="D:\Claude\hydrus_1d_agent\.codex_tmp"
-$env:TMP="D:\Claude\hydrus_1d_agent\.codex_tmp"
-C:\App\anaconda3\envs\hydrus-agent\python.exe -m pytest tests/ -v --basetemp "D:\Claude\hydrus_1d_agent\.codex_tmp\pytest_base"
+```bash
+pytest tests/ -q
 ```
+
+The suite currently reports 374+ passed and 6 skipped. The skipped tests require a real HYDRUS-1D installation and skip cleanly when `HYDRUS_EXE` is not set. CI runs this same command on Windows and Linux with Python 3.10 and 3.11; see [`.github/workflows/tests.yml`](.github/workflows/tests.yml).
+
+If you also want to verify the prompt-to-config benchmark (no HYDRUS, no LLM):
+
+```bash
+python scripts/run_prompt_benchmark.py
+```
+
+See [Maintainer-specific notes](#maintainer-specific-notes) for the Windows-sandbox basetemp recipe used on the maintainer machine.
 
 ## Repository Layout
 
@@ -462,3 +478,30 @@ hydrus_1d_agent/
 - Use copied benchmark workspaces under `benchmarks\benchmark_results\`.
 - Run only reviewed generated configs unless a mismatch is explicitly allowed.
 - Treat unsupported solute, heat, advanced root uptake, hysteresis, dual-porosity, and scaling examples as documented gaps, not whole-agent failures.
+
+## Supported Scope and Limitations
+
+This project is a **review-first, reliability-aware, reproducible research software prototype**. It automates the steps around HYDRUS-1D but does not replace hydrogeological judgement and does not perform parameter calibration. Every HYDRUS run goes through the review-before-run guard.
+
+See [What It Can Do](#what-it-can-do) and [What It Cannot Do Yet](#what-it-cannot-do-yet) above for the full feature surface. Heat transport, dual porosity, hysteresis, advanced solute chemistry, calibration, and SWCC point-data fitting remain out of scope.
+
+## License
+
+License not specified yet. Contact the author for reuse terms.
+
+## Maintainer-specific notes
+
+On the maintainer machine, substitute the following for the generic commands above:
+
+- Python interpreter: `C:\App\anaconda3\envs\hydrus-agent\python.exe` (instead of `python`).
+- Project root: `D:\Claude\hydrus_1d_agent` (instead of "the project root").
+- Test command recipe (PowerShell), routing pytest temp dirs into the project-local sandbox:
+
+```powershell
+New-Item -ItemType Directory -Force "D:\Claude\hydrus_1d_agent\.codex_tmp"
+$env:TEMP="D:\Claude\hydrus_1d_agent\.codex_tmp"
+$env:TMP="D:\Claude\hydrus_1d_agent\.codex_tmp"
+C:\App\anaconda3\envs\hydrus-agent\python.exe -m pytest tests/ -v --basetemp "D:\Claude\hydrus_1d_agent\.codex_tmp\pytest_base"
+```
+
+These are local conventions, not user-facing requirements.

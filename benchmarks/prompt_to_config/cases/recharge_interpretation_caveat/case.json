@@ -1,0 +1,21 @@
+{
+  "case_id": "recharge_interpretation_caveat",
+  "prompt": "I want to estimate recharge with a 5-day model. (Reviewer should remind us that this is short and that modelled bottom flux does not by itself prove field recharge.)",
+  "tags": ["recharge", "interpretation", "free_drainage"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {
+      "must_have_codes": [
+        "RECHARGE_INTERPRETATION_CAVEAT",
+        "RECHARGE_SHORT_WINDOW"
+      ],
+      "max_critical": 0
+    },
+    "features": {
+      "lower_boundary_type": "free_drainage",
+      "simulation_units": "days"
+    },
+    "notes": "Short-window free-drainage case used to verify the reviewer's recharge caveats fire correctly."
+  }
+}

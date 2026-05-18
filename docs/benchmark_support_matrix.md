@@ -55,6 +55,6 @@ Support levels:
 
 Milestone 14 root uptake validation reran `ROOTUPTK`, `5SEASON`, and `TEST2` only. `ROOTUPTK` is a clean official benchmark pass. `5SEASON` and `TEST2` still run successfully with 5 parsed outputs and 9 figures, but remain partial because QC water-balance warnings remain and the official cases include heat/solute features beyond the current generation scope.
 
-`2NOHYSTR` fails on this `H1D_CALC.EXE` build because the first `ATMOSPH.IN` `tAtm` equals `tInit + dtInit` and is rejected during HYDRUS input/time reading. This is an input timing compatibility issue, not a runner/path/output-reader failure. See [`docs/2NOHYSTR_failure_diagnostic.md`](2NOHYSTR_failure_diagnostic.md).
+`2NOHYSTR` fails on this `H1D_CALC.EXE` build because the first `ATMOSPH.IN` `tAtm` equals `tInit + dtInit` and is rejected during HYDRUS input/time reading. This is an input timing compatibility issue, not a runner/path/output-reader failure. (A standalone diagnostic note was planned but not written; the symptom and root cause are recorded here.)
 
 Raw PC-Progress folders under `benchmarks/pc_progress_raw/` should remain read-only inputs. Benchmark runs should continue to use copied workspaces under `benchmarks/benchmark_results/`.

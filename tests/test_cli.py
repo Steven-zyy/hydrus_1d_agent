@@ -599,3 +599,27 @@ def test_all_cli_prints_numerical_failure_and_qc_status(monkeypatch, capsys):
     )
     assert "QC status: failed." in out
     assert "Results may be incomplete or unreliable." in out
+
+
+
+def test_science_review_flag_prints_markdown_and_exits_zero(capsys, monkeypatch):
+    """--science-review must run the deterministic reviewer, print markdown,
+    never invoke HYDRUS, never modify review state, and always exit 0."""
+    from hydrus_agent import runner as runner_module
+
+    def _explode(*a, **kw):
+        raise AssertionError("HYDRUS must not be invoked by --science-review")
+
+    monkeypatch.setattr(runner_module.subprocess, "run", _explode)
+
+    rc = cli.main([
+        "--config", str(SIMPLE_RUNNABLE_CONFIG),
+        "--science-review",
+    ])
+
+    captured = capsys.readouterr()
+    assert rc == 0
+    assert "Scientific review" in captured.out
+    assert "Heuristic review flags" in captured.out
+    # Free-drainage baseline always emits the standing recharge caveat.
+    assert "RECHARGE_INTERPRETATION_CAVEAT" in captured.out

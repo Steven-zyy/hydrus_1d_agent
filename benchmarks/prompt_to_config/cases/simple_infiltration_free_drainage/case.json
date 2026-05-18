@@ -1,0 +1,25 @@
+{
+  "case_id": "simple_infiltration_free_drainage",
+  "prompt": "Set up a 1-day infiltration model on sandy loam with free drainage and a small constant upper flux. Observation nodes at 25 cm and 75 cm.",
+  "tags": ["infiltration", "free_drainage", "single_layer"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {
+      "must_have_codes": ["RECHARGE_INTERPRETATION_CAVEAT"],
+      "max_critical": 0
+    },
+    "features": {
+      "upper_boundary_type": "constant_flux",
+      "lower_boundary_type": "free_drainage",
+      "soil_layer_count": 1,
+      "has_atmospheric_csv": false,
+      "has_material_csv": false,
+      "has_root_uptake": false,
+      "observation_depth_count": 2,
+      "simulation_units": "days",
+      "initial_condition_type": "pressure_head"
+    },
+    "notes": "Baseline infiltration case. Free-drainage triggers the standing recharge caveat."
+  }
+}

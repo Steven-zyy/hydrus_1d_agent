@@ -1,0 +1,17 @@
+{
+  "case_id": "unsupported_heat_transport",
+  "prompt": "Run an infiltration model that also simulates soil temperature and heat transport.",
+  "tags": ["unsupported_physics", "heat_transport"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {"max_critical": 0},
+    "features": {
+      "soil_layer_count": 1
+    },
+    "raw_json": {
+      "must_not_contain_keys": ["heat_transport", "temperature_transport", "heat"]
+    },
+    "notes": "Heat transport is not implemented in this project. The candidate correctly omits any heat-transport key rather than embedding one that the schema would silently drop."
+  }
+}

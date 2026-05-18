@@ -1,0 +1,17 @@
+{
+  "case_id": "observation_nodes_at_depths",
+  "prompt": "Place observation nodes at 10 cm, 40 cm, and 80 cm depth.",
+  "tags": ["observations"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {
+      "must_not_have_codes": ["OBS_NONE_DEFINED", "OBS_AT_LAYER_INTERFACE"],
+      "max_critical": 0
+    },
+    "features": {
+      "observation_depth_count": 3
+    },
+    "notes": "Depths are interior to the single layer; no interface ambiguity."
+  }
+}

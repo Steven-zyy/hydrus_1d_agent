@@ -1,0 +1,23 @@
+# Recommended conda environment for the HYDRUS-1D Agent.
+#
+# Usage:
+#   conda env create -f environment.yml
+#   conda activate hydrus-agent
+#
+# This is a recommended environment, not a strict lock. For bit-for-bit
+# reproducibility, pin exact versions in a follow-up requirements-lock.txt.
+# Windows is the primary target because H1D_CALC.EXE is Windows-only;
+# Linux is supported for development and CI but cannot run HYDRUS.
+name: hydrus-agent
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10,<3.13
+  - pip
+  - numpy
+  - pandas
+  - matplotlib
+  - pydantic>=2.0
+  - pytest
+  - pip:
+      - phydrus

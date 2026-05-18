@@ -109,6 +109,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Write --print-config-schema output to this file.",
     )
+    parser.add_argument("--science-review", action="store_true",
+                        help="Run the deterministic scientific reviewer "
+                             "against --config and print a markdown summary. "
+                             "Does not run HYDRUS, does not modify review "
+                             "state, and always exits 0 even when critical "
+                             "items are present.")
     parser.add_argument("--review", action="store_true",
                         help="With --describe, print the generated config "
                              "summary and validation status before stopping.")
@@ -135,8 +141,27 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _run_science_review_cli(config_path: Path) -> int:
+    """Run the deterministic scientific reviewer and print a markdown
+    summary. Never runs HYDRUS, never modifies review state, never
+    requires prior review, and always returns 0."""
+    try:
+        config = load_config(config_path)
+    except ConfigError as exc:
+        print(f"[ERROR] Config did not load: {exc}", file=sys.stderr)
+        # Even on a load error we exit 0: the reviewer is advisory only.
+        return 0
+    from hydrus_agent.scientific_reviewer import render_markdown, review_config
+    result = review_config(config)
+    print(render_markdown(result))
+    return 0
+
+
 def main(argv=None) -> int:
     args = _build_parser().parse_args(argv)
+
+    if args.science_review:
+        return _run_science_review_cli(args.config)
 
     if args.benchmark_gap_report is not None:
         if args.benchmark_manifest is not None or args.benchmark_official is not None:

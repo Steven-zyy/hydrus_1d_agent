@@ -10,6 +10,8 @@ from hydrus_agent.case import create_run_folder
 from hydrus_agent.schema import ModelConfig
 from hydrus_agent.validator import ConfigError, load_config
 
+__version__ = "0.6.0"
+
 __all__ = [
     "ConfigError",
     "ModelConfig",

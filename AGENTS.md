@@ -4,6 +4,20 @@ This repository contains a local HYDRUS-1D automation agent.
 
 It is a **Windows-local** HYDRUS-1D automation agent. Full HYDRUS execution requires a local Windows installation of PC-Progress HYDRUS-1D and access to `H1D_CALC.EXE`. The Python helpers (`--review`, `--write-config-template`, `--print-config-schema`) work on any platform.
 
+## Step 0 — Identify the relevant skill
+
+Before writing configs, running HYDRUS, or interpreting results, identify which skill(s) under [`skills/`](skills/) the user's request maps to and read the matching `SKILL.md`. Skills describe the standard workflow, guardrails, and failure modes for each modelling activity. The current skill catalogue:
+
+- [`skills/case_design/`](skills/case_design/SKILL.md) — translating a request into a reviewable config
+- [`skills/boundary_condition/`](skills/boundary_condition/SKILL.md) — choosing boundaries and atmospheric forcing
+- [`skills/soil_profile/`](skills/soil_profile/SKILL.md) — building the layered profile and van Genuchten parameters
+- [`skills/run_qc/`](skills/run_qc/SKILL.md) — executing the pipeline and reading the four-status reliability report
+- [`skills/scenario_comparison/`](skills/scenario_comparison/SKILL.md) — running parameter-override batches
+- [`skills/field_comparison/`](skills/field_comparison/SKILL.md) — comparing measured data against `Obs_Node.out`
+- [`skills/scientific_reporting/`](skills/scientific_reporting/SKILL.md) — composing the final answer with the required reliability statement
+
+If the request spans multiple skills (typical), read each `SKILL.md` in the order they will be applied. Skills do not replace the rules in this file — they specialise them. There is no runtime skill framework and no `--skill` CLI flag; skills are documentation. See [`skills/README.md`](skills/README.md) for the index and structure.
+
 ## Default workflow for everyday user prompts
 
 When a user gives a short modelling request such as "build a 30-day model with sandy loam over sand and tell me whether the result is reliable", you should follow this workflow without asking the user to repeat the steps. See [docs/simple_user_prompts.md](docs/simple_user_prompts.md) for prompt examples.

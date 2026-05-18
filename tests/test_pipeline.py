@@ -167,6 +167,35 @@ def test_full_pipeline_happy_path(
     assert (run_dir / PIPELINE_SUMMARY_FILENAME).is_file()
     assert any(run_dir.glob("figures/*.png"))
 
+    # Reproducibility manifest is written as an independent artefact.
+    manifest_path = run_dir / "run_manifest.json"
+    assert manifest_path.is_file()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["schema_version"] == 1
+    assert manifest["case_id"] == summary["case_id"]
+    assert manifest["hydrus"]["launch_mode"] == "argv"
+    assert manifest["reliability"]["overall_status"] in {"ok", "incomplete"}
+    assert any(
+        entry["path"].lower().endswith(".in")
+        or entry["path"].lower().endswith(".dat")
+        or entry["path"].lower().endswith(".dir")
+        or entry["path"] == "config.json"
+        for entry in manifest["inputs"]
+    )
+    # pipeline_summary.json keys remain unchanged (no manifest_path key).
+    assert "manifest_path" not in summary
+
+    # Scientific review is written as a non-blocking artefact.
+    sr_path = run_dir / "scientific_review.json"
+    assert sr_path.is_file()
+    sr = json.loads(sr_path.read_text(encoding="utf-8"))
+    assert sr["schema_version"] == 1
+    assert isinstance(sr["items"], list)
+    assert {"info", "warning", "critical"} <= set(sr["counts"].keys())
+    # Reviewer must not change pipeline_summary or overall_status.
+    assert "scientific_review" not in summary
+    assert summary["overall_status"] == "ok"
+
 
 def test_full_pipeline_summary_json_round_trip(
     isolated_runs, fake_hydrus_exe, fake_runner_writes_real_outputs,
