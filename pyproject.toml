@@ -1,0 +1,55 @@
+# pyproject.toml for the HYDRUS-1D Agent.
+#
+# License: not specified yet. The `license` field is intentionally
+# omitted; do not infer an open-source license from this file.
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hydrus-agent"
+version = "0.6.0"
+description = "A local, review-first, reliability-aware, reproducible workflow for preparing, running, reading, plotting, checking, and comparing HYDRUS-1D simulations. Research software prototype."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Yuyang Zhu" }]
+keywords = [
+  "HYDRUS-1D",
+  "vadose zone hydrology",
+  "research software",
+  "workflow automation",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Hydrology",
+]
+dependencies = [
+  "pydantic>=2.0",
+  "phydrus",
+  "numpy",
+  "pandas",
+  "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage   = "https://github.com/Steven-zyy/hydrus_1d_agent"
+Repository = "https://github.com/Steven-zyy/hydrus_1d_agent"
+
+[project.scripts]
+hydrus-agent = "main:main"
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+include = ["hydrus_agent*"]

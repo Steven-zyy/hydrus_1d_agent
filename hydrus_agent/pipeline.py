@@ -119,12 +119,50 @@ def run_full_pipeline(
         "steps": [],
     }
 
+    def _finalize(
+        stopped_after: Optional[str] = None,
+        run_dir: Optional[Path] = None,
+    ) -> Dict[str, Any]:
+        """Write pipeline_summary.json (via _finish), then best-effort manifest
+        and scientific_review.json. Neither side artefact mutates the summary
+        or affects ``overall_status``."""
+        result = _finish(summary, stopped_after=stopped_after, run_dir=run_dir)
+        if run_dir is not None and Path(run_dir).is_dir():
+            try:
+                from hydrus_agent.run_manifest import (
+                    write_run_manifest_for_pipeline,
+                )
+                write_run_manifest_for_pipeline(
+                    summary=result,
+                    run_dir=Path(run_dir),
+                    config_path=Path(config_path),
+                    hydrus_launch_mode=hydrus_launch_mode,
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to write run_manifest.json: %s", exc)
+
+            try:
+                from hydrus_agent import load_config as _load_config
+                from hydrus_agent.scientific_reviewer import (
+                    result_to_dict,
+                    review_config,
+                )
+                _cfg = _load_config(config_path)
+                _sr = review_config(_cfg)
+                (Path(run_dir) / "scientific_review.json").write_text(
+                    json.dumps(result_to_dict(_sr), indent=2, sort_keys=True),
+                    encoding="utf-8",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to write scientific_review.json: %s", exc)
+        return result
+
     # --- Step 1: load + validate config ----------------------------------
     config = None
     step1 = _step_load_config(config_path)
     summary["steps"].append(asdict(step1))
     if not step1.ok:
-        return _finish(summary, stopped_after="load_and_validate_config")
+        return _finalize(stopped_after="load_and_validate_config")
 
     # Late imports keep the pipeline module importable even when phydrus
     # is missing (e.g. for QC-only test environments).
@@ -147,7 +185,7 @@ def run_full_pipeline(
     step2 = _step_create_run_folder(config, overwrite_run)
     summary["steps"].append(asdict(step2))
     if not step2.ok:
-        return _finish(summary, stopped_after="create_run_folder")
+        return _finalize(stopped_after="create_run_folder")
 
     run_dir = Path(step2.outputs[0])
     summary["run_dir"] = str(run_dir)
@@ -156,7 +194,7 @@ def run_full_pipeline(
     step3 = _step_prepare_input(config, run_dir)
     summary["steps"].append(asdict(step3))
     if not step3.ok:
-        return _finish(summary, stopped_after="prepare_input", run_dir=run_dir)
+        return _finalize(stopped_after="prepare_input", run_dir=run_dir)
 
     project_dir = run_dir / "hydrus_project"
 
@@ -171,7 +209,7 @@ def run_full_pipeline(
     summary["hydrus_status"] = _inspect_hydrus_status(project_dir, run_dir, step4)
     _set_reliability_status(summary, qc_summary=None)
     if not step4.ok:
-        return _finish(summary, stopped_after="run_hydrus", run_dir=run_dir)
+        return _finalize(stopped_after="run_hydrus", run_dir=run_dir)
 
     # --- Steps 5-8: soft (continue on failure) ---------------------------
     outputs_data, step5 = _step_read_outputs(project_dir)
@@ -214,7 +252,7 @@ def run_full_pipeline(
     )
     summary["steps"].append(asdict(step8))
 
-    return _finish(summary, run_dir=run_dir)
+    return _finalize(run_dir=run_dir)
 
 
 # --- Internal step implementations ---------------------------------------

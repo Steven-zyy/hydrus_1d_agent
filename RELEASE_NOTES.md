@@ -1,5 +1,41 @@
 # Release Notes
 
+## v0.6.0-skills-reproducibility — 2026-05-18
+
+Released as a research software prototype. **License not specified yet.**
+
+This release adds a skills documentation layer, run-time provenance, a deterministic scientific reviewer, and an offline prompt-to-config benchmark. It also formalises Python packaging and CI.
+
+### Added
+
+- **Skills documentation layer** under [`skills/`](skills/README.md): seven workflow-level `SKILL.md` files (`case_design`, `boundary_condition`, `soil_profile`, `run_qc`, `scenario_comparison`, `field_comparison`, `scientific_reporting`) plus an index. Skills are documentation, not a runtime framework; there is no `--skill` CLI flag.
+- **`runs/<case_id>/run_manifest.json`**: a reproducibility provenance file written alongside `pipeline_summary.json`. Records config hash, HYDRUS executable and launch mode, Python and OS environment, `hydrus_agent` version, input file hashes, and key output paths. Independent of `pipeline_summary.json`; never changes `overall_status`.
+- **`hydrus_agent/scientific_reviewer.py`**: deterministic, rule-based science-level reviewer that emits structured items (severity, category, code, message, implication, suggested_action). Available via the new `--science-review` CLI flag (does not run HYDRUS, does not modify review state, always exits 0) and written as `scientific_review.json` in every run directory. Items are heuristic flags; they do not change `overall_status`. `critical` is reserved for clearly-impossible inputs (uniform initial water content outside `[theta_r, theta_s]`).
+- **Offline prompt-to-config benchmark** under [`benchmarks/prompt_to_config/`](benchmarks/prompt_to_config/README.md) plus [`scripts/run_prompt_benchmark.py`](scripts/run_prompt_benchmark.py). **The benchmark evaluates pre-saved candidate JSON configs against per-case expectations (schema validation, scientific-reviewer codes, structural features, raw JSON shape). It does not call an LLM at runtime and does not run HYDRUS.** Eleven canonical cases ship with the release.
+- **Python packaging**: `pyproject.toml` with PEP 621 metadata. New console script `hydrus-agent` (entry point `main:main`). `python main.py …` continues to work unchanged.
+- **Recommended environment**: `environment.yml` for conda users. `requirements.txt` is preserved for pip users. No strict lock file added.
+- **Citation file**: `CITATION.cff` (Citation File Format 1.2.0). No DOI yet.
+- **CI**: `.github/workflows/tests.yml` runs `pytest tests/ -q` on Windows and Linux with Python 3.10 and 3.11. CI does **not** set `HYDRUS_EXE`; the six HYDRUS-execution-dependent tests skip cleanly in CI.
+
+### Changed
+
+- `hydrus_agent.__version__` bumped from `"0.2.0-local"` to `"0.6.0"`.
+- README restructured: explicit Installation section, generic `python` in user-facing commands, maintainer-specific Windows paths moved to a dedicated "Maintainer-specific notes" section, new "Supported Scope and Limitations" and "License" sections.
+
+### Tests
+
+- 374 tests pass, 6 skipped (HYDRUS-execution-dependent). Zero failures.
+
+### Known Limitations
+
+- All v0.5 limitations remain in scope.
+- Skills are documentation only; the agent does not auto-select or auto-execute them.
+- The scientific reviewer uses heuristic plausibility thresholds, not hard validity criteria. `critical` is used very conservatively.
+- The prompt-to-config benchmark grades saved JSON files; it does not evaluate any LLM at run time.
+- **License not specified yet.** Contact the author for reuse terms.
+
+---
+
 ## v0.5-csv-reliability - 2026-05-15
 
 This release adds CSV-driven input support and robust HYDRUS reliability reporting on top of the v0.2-local prototype.

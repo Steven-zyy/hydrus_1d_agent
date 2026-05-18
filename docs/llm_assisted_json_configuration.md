@@ -370,3 +370,15 @@ Re-run `--review` on the edited config to update the state, then run `--all` aga
 - Do not commit CSV files containing sensitive field-site data without review.
 - Do not use `--allow-config-mismatch` for LLM-generated configs unless you have reviewed the config manually.
 - The agent automates HYDRUS workflows but does not replace hydrogeological judgement. Review simulation setup, boundary conditions, and outputs before interpreting results.
+
+---
+
+## Verifying prompt-to-config quality
+
+A deterministic, offline benchmark grades pre-saved candidate configs against per-case expectations (schema validation, scientific-reviewer codes, structural features, raw JSON shape). It never calls an LLM and never runs HYDRUS, so it is safe to run on any platform.
+
+```powershell
+C:\App\anaconda3\envs\hydrus-agent\python.exe scripts\run_prompt_benchmark.py
+```
+
+See [benchmarks/prompt_to_config/README.md](../benchmarks/prompt_to_config/README.md) for the case schema and instructions for adding new cases.

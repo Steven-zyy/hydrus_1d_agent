@@ -17,6 +17,7 @@ Project-level instructions for Claude Code working in this repository.
 ## Key docs
 
 - [AGENTS.md](AGENTS.md) — full project instructions
+- [skills/README.md](skills/README.md) — workflow-level skill catalogue (read the relevant `SKILL.md` before modifying configs or running HYDRUS)
 - [docs/simple_user_prompts.md](docs/simple_user_prompts.md) — short prompts users can write
 - [docs/llm_assisted_json_configuration.md](docs/llm_assisted_json_configuration.md) — technical LLM-assisted JSON workflow
 - [docs/getting_started_with_codex_or_claude_code.md](docs/getting_started_with_codex_or_claude_code.md) — first-run walkthrough

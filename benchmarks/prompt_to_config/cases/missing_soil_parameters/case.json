@@ -1,0 +1,11 @@
+{
+  "case_id": "missing_soil_parameters",
+  "prompt": "Sandy loam infiltration (the user forgot to give the van Genuchten n exponent).",
+  "tags": ["invalid", "missing_field"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "fail",
+    "schema_error_pattern": "van_genuchten|\\bn\\b",
+    "notes": "Pydantic must reject the candidate because the van Genuchten n field is missing. The pattern is intentionally a short field-name regex rather than a long Pydantic phrase."
+  }
+}

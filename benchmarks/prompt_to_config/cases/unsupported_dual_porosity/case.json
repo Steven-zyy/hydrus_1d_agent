@@ -1,0 +1,19 @@
+{
+  "case_id": "unsupported_dual_porosity",
+  "prompt": "Simulate macropore flow in this clay loam with a dual porosity model.",
+  "tags": ["unsupported_physics", "dual_porosity"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {"max_critical": 0},
+    "features": {
+      "soil_layer_count": 1
+    },
+    "raw_json": {
+      "must_not_contain_keys": [
+        "dual_porosity", "dual_permeability", "immobile_water", "macropore"
+      ]
+    },
+    "notes": "Dual porosity / dual permeability is out of scope. The candidate correctly omits these fields instead of embedding them and trusting the schema to drop them."
+  }
+}

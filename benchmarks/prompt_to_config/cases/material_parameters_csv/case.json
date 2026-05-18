@@ -1,0 +1,16 @@
+{
+  "case_id": "material_parameters_csv",
+  "prompt": "Use materials from the project's stable van Genuchten CSV: sandy loam on top, sand below.",
+  "tags": ["material_csv", "two_layer"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {"max_critical": 0},
+    "features": {
+      "has_material_csv": true,
+      "has_atmospheric_csv": false,
+      "soil_layer_count": 2
+    },
+    "notes": "Layer materials reference CSV rows by name."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "project_name": "Two-layer soil column",
+  "case_id": "bench_two_layer_profile",
+  "simulation_time": {"t_init": 0.0, "t_end": 5.0, "dt_init": 0.001, "units": "days"},
+  "soil_profile": [
+    {"depth_top": 0.0, "depth_bottom": 0.3, "material_id": 1},
+    {"depth_top": 0.3, "depth_bottom": 1.0, "material_id": 2}
+  ],
+  "van_genuchten": [
+    {"material_id": 1, "theta_r": 0.045, "theta_s": 0.43,
+     "alpha": 14.5, "n": 2.68, "Ks": 7.128, "l": 0.5},
+    {"material_id": 2, "theta_r": 0.078, "theta_s": 0.43,
+     "alpha": 3.6, "n": 1.56, "Ks": 0.25, "l": 0.5}
+  ],
+  "initial_condition": {"type": "pressure_head", "value": -1.0},
+  "upper_boundary": {"type": "constant_flux", "flux": 0.001},
+  "lower_boundary": {"type": "free_drainage"},
+  "observation_depths": [0.15, 0.6],
+  "output_settings": {"print_times": [1.0, 2.5, 5.0]}
+}

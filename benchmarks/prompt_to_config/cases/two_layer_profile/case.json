@@ -1,0 +1,17 @@
+{
+  "case_id": "two_layer_profile",
+  "prompt": "Build a two-layer profile: 0-30 cm sand over 30-100 cm loam. Free drainage at the base.",
+  "tags": ["two_layer", "free_drainage"],
+  "candidate_config": "candidate.json",
+  "expected": {
+    "schema_validation": "pass",
+    "scientific_review": {"max_critical": 0},
+    "features": {
+      "soil_layer_count": 2,
+      "lower_boundary_type": "free_drainage",
+      "upper_boundary_type": "constant_flux",
+      "has_material_csv": false
+    },
+    "notes": "Two contiguous van Genuchten materials, sand over loam."
+  }
+}
